@@ -1,6 +1,7 @@
 from main import db
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
+from flask import jsonify
 
 
 class User(db.Model):
@@ -57,8 +58,65 @@ class Gmud(db.Model):
   numero = db.Column(db.String(30), unique=True, nullable=False)
   responsavel = db.Column(db.String(80), unique=False, nullable=False)
   data = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.datetime.utcnow)
-
+  status = db.Column(db.Boolean, default=False)
+  versionamento = db.Column(db.Text, unique=False, nullable=True)
+  plano_execucao = db.Column(db.String(100), unique=False, nullable=False)
+  plano_reversao = db.Column(db.String(100), unique=False, nullable=False)
+  evidencias = db.Column(db.String(120), unique=False, nullable=False)
+  referencia_externa = db.Column(db.String(120), unique=True, nullable=False)
 
   def save(self):
     db.session.add(self)
     db.session.commit()
+
+  def remove(self, id):
+    gmud = Gmud.get_gmud_by_id(id)
+    db.session.delete(gmud)
+    db.session.commit()
+
+  @classmethod
+  def get_gmud_by_id(cls, id):
+    return Gmud.query.filter_by(id=id).first()
+
+  @classmethod
+  def retrieve_all_gmuds(cls):
+    return jsonify(Gmud.query.all())
+
+
+class Emissor(db.Model):
+
+  __tablename__ = 'emissores'
+
+  id = db.Column(db.Integer, primary_key=True)
+  nome = db.Column(db.String(100), nullable=False, unique=True)
+  servidor = db.Column(db.String(100), nullable=False, unique=False)
+  nome_base = db.Column(db.String(80), nullable=False, unique=True)
+  usuario_db = db.Column(db.String(90), nullable=False, unique=False)
+  senha_db = db.Column(db.String(100), nullable=False, unique=False)
+
+  def save(self):
+    db.session.add(self)
+    db.session.commit()
+
+  def remove(self, id):
+    emissor = Emissor.get_emissor_by_id(id)
+    db.session.delete(emissor)
+    db.session.commit()
+
+  @classmethod
+  def get_emissor_by_id(cls, id):
+    return Emissor.query.filter(id=id).first()
+
+  @classmethod
+  def retrieve_all_emissores(cls):
+    def to_json(arg):
+      return {
+        'id': arg.id,
+        'nome': arg.nome,
+        'servidor': arg.servidor,
+        'nome_base': arg.nome_base,
+        'usuario_db': arg.usuario_db,
+        'senha_db': arg.senha_db
+      }
+
+    return {'emissores': list(map(lambda x: to_json(x), Emissor.query.all()))}

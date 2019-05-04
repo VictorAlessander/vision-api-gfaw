@@ -6,7 +6,7 @@ from db.config import configure
 from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 jwt = JWTManager(app)
 setup_database = configure(app)
@@ -22,12 +22,14 @@ def create_tables():
 
 
 import models
-import UserResource, JwtResource
+import  UserResource, JwtResource, GmudResource, EmissorResource
 
 api.add_resource(UserResource.UserLogin, '/login')
 api.add_resource(UserResource.UserRegistration, '/registration')
 api.add_resource(JwtResource.TokenRefresh, '/token/refresh')
 api.add_resource(JwtResource.UserLogoutRefresh, '/logout')
+api.add_resource(GmudResource.GmudResource, '/gmuds')
+api.add_resource(EmissorResource.EmissorResource, '/emissores')
 
 
 @jwt.token_in_blacklist_loader
