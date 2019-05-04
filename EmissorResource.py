@@ -87,4 +87,8 @@ class EmissorResource(Resource):
   def delete(self):
     data = self.parser.parse_args()
 
-    Emissor.remove(data['id'])
+    try:
+      Emissor.remove(data['id'])
+    except Exception as err:
+      print(err)
+      return {'message': 'Algo esta incorreto'}

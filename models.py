@@ -64,6 +64,7 @@ class Gmud(db.Model):
   plano_reversao = db.Column(db.String(100), unique=False, nullable=False)
   evidencias = db.Column(db.String(120), unique=False, nullable=False)
   referencia_externa = db.Column(db.String(120), unique=True, nullable=False)
+  emissor_id = db.Column(db.Integer, db.ForeignKey('emissores.id'), nullable=False)
 
   def save(self):
     db.session.add(self)
@@ -80,7 +81,22 @@ class Gmud(db.Model):
 
   @classmethod
   def retrieve_all_gmuds(cls):
-    return jsonify(Gmud.query.all())
+    def to_json(x):
+      return {
+        'id': arg.id,
+        'numero': arg.numero,
+        'responsavel': arg.responsavel,
+        'data': arg.data,
+        'status': arg.status,
+        'versionamento': arg.versionamento,
+        'plano_execucao': arg.plano_execucao,
+        'plano_reversao': arg.plano_reversao,
+        'evidencias': arg.evidencias,
+        'referencia_externa': arg.referencia_externa,
+        'emissor_id': arg.emissor_id
+      }
+  
+    return {'gmuds': list(map(lambda x: to_json(x), Gmud.query.all()))}
 
 
 class Emissor(db.Model):
@@ -93,6 +109,8 @@ class Emissor(db.Model):
   nome_base = db.Column(db.String(80), nullable=False, unique=True)
   usuario_db = db.Column(db.String(90), nullable=False, unique=False)
   senha_db = db.Column(db.String(100), nullable=False, unique=False)
+  gmuds = db.relationship('Gmud', backref='emissor', lazy=True)
+
 
   def save(self):
     db.session.add(self)

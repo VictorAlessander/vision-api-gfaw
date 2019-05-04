@@ -22,7 +22,7 @@ def create_tables():
 
 
 import models
-import  UserResource, JwtResource, GmudResource, EmissorResource
+import UserResource, JwtResource, GmudResource, EmissorResource
 
 api.add_resource(UserResource.UserLogin, '/login')
 api.add_resource(UserResource.UserRegistration, '/registration')
