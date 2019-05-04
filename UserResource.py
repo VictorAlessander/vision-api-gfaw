@@ -38,7 +38,7 @@ class UserRegistration(Resource):
     )
 
     try:
-      if User.validate_already_exists(data['username']):
+      if User.user_already_exists(data['username']):
         return {'message': 'O usuario ja existe'}
       else:
         new_user.save()
@@ -71,7 +71,7 @@ class UserLogin(Resource):
   def post(self):
     data = self.parser.parse_args()
 
-    user = User.authenticate(data['username', data['password']])
+    user = User.retrieve_user(user=data['username'])
 
     if user and User.verify_hash(data['password'], user.password):
       access_token = create_access_token(identity=data['username'])

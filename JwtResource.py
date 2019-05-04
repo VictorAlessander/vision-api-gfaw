@@ -1,5 +1,5 @@
 from flask_restful import reqparse, Resource
-from flask_jwt_extended import jwt_refresh_token_required
+from flask_jwt_extended import jwt_refresh_token_required, get_jwt_identity, get_raw_jwt, create_access_token
 
 class UserLogoutRefresh(Resource):
   @jwt_refresh_token_required
