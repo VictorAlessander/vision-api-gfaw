@@ -4,6 +4,12 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from db.config import configure
 from flask_jwt_extended import JWTManager
+import os
+from flask import flash, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -15,6 +21,7 @@ db = SQLAlchemy(setup_database)
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.before_first_request
 def create_tables():
@@ -22,7 +29,7 @@ def create_tables():
 
 
 import models
-import  UserResource, JwtResource, GmudResource, EmissorResource
+import  UserResource, JwtResource, GmudResource, EmissorResource, FileResource
 
 api.add_resource(UserResource.UserLogin, '/login')
 api.add_resource(UserResource.UserRegistration, '/registration')
@@ -30,6 +37,7 @@ api.add_resource(JwtResource.TokenRefresh, '/token/refresh')
 api.add_resource(JwtResource.UserLogoutRefresh, '/logout')
 api.add_resource(GmudResource.GmudResource, '/gmuds')
 api.add_resource(EmissorResource.EmissorResource, '/emissores')
+api.add_resource(FileResource.FileResource, '/upload')
 
 
 @jwt.token_in_blacklist_loader
