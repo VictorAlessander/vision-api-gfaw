@@ -5,7 +5,6 @@ from models import File
 
 class FileResource(Resource):
 
-
   def __init__(self):
 
     self.parser = reqparse.RequestParser()
@@ -49,7 +48,9 @@ class FileResource(Resource):
 
   def get(self):
     if 'id' in requests.args:
-      return File.find_file_by_id(request.args['id'])
+      doc = File.find_file_by_id(request.args['id'])
+
+      return doc if doc else {'message': 'Arquivo nao encontrado'}
     else:
       return File.retrieve_all_files()
 
@@ -62,9 +63,11 @@ class FileResource(Resource):
       doc.document = data['document']
       doc.user_id = data['user_id']
       doc.extension = data['extension']
+
       try:
         doc.save()
         return {'message': 'Arquivo atualizado com sucesso'}
+
       except Exception as err:
         print(err)
         return {'message': 'Algo esta incorreto'}

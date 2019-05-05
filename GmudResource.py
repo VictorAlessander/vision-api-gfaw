@@ -213,7 +213,6 @@ class GmudResource(Resource):
       return {'message': 'BAD REQUEST'}, 400
 
   def delete(self):
-    
     if 'id' in request.args:
       try:
         Gmud.remove(request.args['id'])

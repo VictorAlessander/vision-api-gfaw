@@ -152,7 +152,6 @@ class File(db.Model):
   __tablename__ = 'files'
 
   id = db.Column(db.Integer, primary_key=True)
-  # responsavel = db.Column(db.String(80), unique=False, nullable=False)
   document = db.Column(db.String(120), unique=False, nullable=False)
   data = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.datetime.utcnow)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -164,7 +163,9 @@ class File(db.Model):
 
   @classmethod
   def find_file_by_id(cls, id):
-    return File.query.filter_by(id=id).first()
+    document = File.query.filter_by(id=id).first()
+
+    return serializers.file_schema.jsonify(document)
 
   def remove(self, id):
     doc = File.find_file_by_id(id = id)
