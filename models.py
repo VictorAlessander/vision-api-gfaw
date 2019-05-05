@@ -11,6 +11,7 @@ class User(db.Model):
   username = db.Column(db.String(100), unique=True, nullable=False)
   password = db.Column(db.String(120), nullable=False)
   documents = db.relationship('File', backref='user')
+  
 
   def save(self):
     db.session.add(self)
@@ -99,6 +100,7 @@ class File(db.Model):
   document = db.Column(db.String(120), unique=False, nullable=False)
   data = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.datetime.utcnow)
   user_id = db.Column(db.Integer, db.ForeignKey('users'), lazy=True)
+  extension = db.Column(db.String(8), nullable=False)
 
   def save(self):
   db.session.add(self)
@@ -124,7 +126,8 @@ class File(db.Model):
         'id': arg.id,
         'document': arg.document,
         'data': arg.data,
-        'user_id': arg.user_id
+        'user_id': arg.user_id,
+        'extension': arg.extension
       }
   
     return {'arquivos': list(map(lambda x: to_json(x), File.query.all()))} 

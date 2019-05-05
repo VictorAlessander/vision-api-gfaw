@@ -24,12 +24,20 @@ class FileResource(Resource):
       help='Id do usuario responsavel do documento nao pode ser vazio'
     )
 
+     self.parser.add_argument(
+      'extension',
+      required=True, 
+      location='json',
+      help='Extensao nao pode ser vazio'
+    )
+
   def post(self):
     data = self.parser.parse_args()
 
     new_file = File(
       document=data['document'],
-      user_id=data['user_id']
+      user_id=data['user_id'],
+      extension=data['extension']
     )
 
     try:
@@ -52,6 +60,7 @@ class FileResource(Resource):
     if doc:
       doc.document = data['document']
       doc.user_id = data['user_id']
+      doc.extension = data['extension']
       try:
         doc.save()
       except Exception as err:
