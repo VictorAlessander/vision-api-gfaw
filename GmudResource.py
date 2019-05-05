@@ -93,6 +93,10 @@ class GmudResource(Resource):
     data = self.parser.parse_args()
 
     # getdate = datetime.now()
+    # numero_gmud = 'C'+'{}'+'{}'+'{}'.format(
+    #   getdate.strftime("%Y"),
+    #   getdate.strftime("%m"),
+    #   getdate.strftime("%d"))
 
     new_gmud = Gmud(
       numero=data['numero'],
@@ -104,7 +108,7 @@ class GmudResource(Resource):
       plano_reversao=data['plano_reversao'],
       evidencias=data['evidencias'],
       referencia_externa=data['referencia_externa'],
-      emissor=data['emissor']
+      emissor=data['emissor_id']
     )
 
     try:
@@ -189,6 +193,12 @@ class GmudResource(Resource):
 
     data = self.parser.parse_args()
 
+    # getdate = datetime.now()
+    # numero_gmud = 'C'+'{}'+'{}'+'{}'.format(
+    #   getdate.strftime("%Y"),
+    #   getdate.strftime("%m"),
+    #   getdate.strftime("%d"))
+
     if 'id' in request.args:
       gmud = Gmud.get_gmud_by_id(request.args['id'])
 
@@ -203,7 +213,7 @@ class GmudResource(Resource):
         gmud.plano_reversao = data['plano_reversao']
         gmud.evidencias = data['evidencias']
         gmud.referencia_externa = data['referencia_externa']
-        gmud.emissor = data['emissor']
+        gmud.emissor_id = data['emissor_id']
 
         try:
           gmud.save()
