@@ -84,7 +84,7 @@ class GmudResource(Resource):
     )
 
     self.parser.add_argument(
-      'emissor',
+      'emissor_id',
       required=True,
       location='json',
       help='Id do emissor nao pode estar vazio'
@@ -92,7 +92,7 @@ class GmudResource(Resource):
 
     data = self.parser.parse_args()
 
-    # getdate = datetime
+    # getdate = datetime.now()
 
     new_gmud = Gmud(
       numero=data['numero'],
@@ -181,7 +181,7 @@ class GmudResource(Resource):
     )
 
     self.parser.add_argument(
-      'emissor',
+      'emissor_id',
       required=True,
       location='json',
       help='Id do emissor nao pode estar vazio'
