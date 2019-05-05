@@ -1,6 +1,7 @@
 from flask_restful import reqparse, Resource
 from models import Gmud
 from flask import request
+from serializers import gmud_schema
 
 
 class GmudResource(Resource):
@@ -12,7 +13,7 @@ class GmudResource(Resource):
     if 'id' in request.args:
       gmud = Gmud.get_gmud_by_id(request.args['id'])
 
-      return gmud if gmud else {'message': 'Gmud nao encontrada'}
+      return gmud_schema.jsonify(gmud) if gmud else {'message': 'Gmud nao encontrada'}
     else:
       return Gmud.retrieve_all_gmuds()
 

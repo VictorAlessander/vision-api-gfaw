@@ -1,6 +1,7 @@
 from flask_restful import reqparse, Resource
 from flask import request
 from models import File
+from serializers import file_schema
 
 
 class FileResource(Resource):
@@ -50,7 +51,7 @@ class FileResource(Resource):
     if 'id' in requests.args:
       doc = File.find_file_by_id(request.args['id'])
 
-      return doc if doc else {'message': 'Arquivo nao encontrado'}
+      return file_schema.jsonify(doc) if doc else {'message': 'Arquivo nao encontrado'}
     else:
       return File.retrieve_all_files()
 

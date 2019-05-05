@@ -1,7 +1,6 @@
 from main import db
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
-import serializers
 
 
 class User(db.Model):
@@ -79,9 +78,7 @@ class Gmud(db.Model):
 
   @classmethod
   def get_gmud_by_id(cls, id):
-    gmud = Gmud.query.filter_by(id=id).first()
-
-    return serializers.gmud_schema.jsonify(gmud)
+    return Gmud.query.filter_by(id=id).first()
 
   @classmethod
   def retrieve_all_gmuds(cls):
@@ -128,9 +125,7 @@ class Emissor(db.Model):
 
   @classmethod
   def get_emissor_by_id(cls, id):
-    emissor = Emissor.query.filter_by(id=id).first()
-
-    return serializers.emissor_schema.jsonify(emissor)
+    return Emissor.query.filter_by(id=id).first()
 
   @classmethod
   def retrieve_all_emissores(cls):
@@ -163,9 +158,7 @@ class File(db.Model):
 
   @classmethod
   def find_file_by_id(cls, id):
-    document = File.query.filter_by(id=id).first()
-
-    return serializers.file_schema.jsonify(document)
+    return File.query.filter_by(id=id).first()
 
   def remove(self, id):
     doc = File.find_file_by_id(id = id)
