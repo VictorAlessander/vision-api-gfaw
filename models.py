@@ -64,7 +64,7 @@ class Gmud(db.Model):
   plano_execucao = db.Column(db.String(100), unique=False, nullable=False)
   plano_reversao = db.Column(db.String(100), unique=False, nullable=False)
   evidencias = db.Column(db.String(120), unique=False, nullable=False)
-  referencia_externa = db.Column(db.String(120), unique=True, nullable=False)
+  referencia_externa = db.Column(db.String(120), unique=False, nullable=True)
   emissor_id = db.Column(db.Integer, db.ForeignKey('emissores.id'), nullable=False)
 
   def save(self):
