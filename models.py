@@ -1,7 +1,7 @@
 from main import db
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
-from flask import jsonify
+import serializers
 
 
 class User(db.Model):
@@ -79,7 +79,9 @@ class Gmud(db.Model):
 
   @classmethod
   def get_gmud_by_id(cls, id):
-    return Gmud.query.filter_by(id=id).first()
+    gmud = Gmud.query.filter_by(id=id).first()
+
+    return serializers.gmud_schema.jsonify(gmud)
 
   @classmethod
   def retrieve_all_gmuds(cls):
@@ -126,7 +128,9 @@ class Emissor(db.Model):
 
   @classmethod
   def get_emissor_by_id(cls, id):
-    return Emissor.query.filter_by(id=id).first()
+    emissor = Emissor.query.filter_by(id=id).first()
+
+    return serializers.emissor_schema.jsonify(emissor)
 
   @classmethod
   def retrieve_all_emissores(cls):

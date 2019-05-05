@@ -8,6 +8,7 @@ import os
 from flask import flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 
@@ -18,6 +19,7 @@ jwt = JWTManager(app)
 setup_database = configure(app)
 db = SQLAlchemy(setup_database)
 migrate = Migrate(app, db)
+ma = Marshmallow(app)
 
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 app.config['JWT_BLACKLIST_ENABLED'] = True

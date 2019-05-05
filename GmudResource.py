@@ -12,7 +12,7 @@ class GmudResource(Resource):
     if 'id' in request.args:
       gmud = Gmud.get_gmud_by_id(request.args['id'])
 
-      return {'gmud': gmud} if gmud else {'message': 'Gmud nao encontrada'}
+      return gmud if gmud else {'message': 'Gmud nao encontrada'}
     else:
       return Gmud.retrieve_all_gmuds()
 
@@ -42,6 +42,7 @@ class GmudResource(Resource):
       'status',
       required=False,
       location='json',
+      type=bool,
       help='Status da gmud'
     )
 
@@ -50,14 +51,6 @@ class GmudResource(Resource):
       required=False,
       location='json',
       help='Versionamento da gmud'
-    )
-
-    self.parser.add_argument(
-      'status',
-      required=False,
-      location='json',
-      type=bool,
-      help='Status da gmud'
     )
 
     self.parser.add_argument(

@@ -10,7 +10,12 @@ class EmissorResource(Resource):
 
 
   def get(self):
-    return Emissor.retrieve_all_emissores()
+    if 'id' in request.args:
+      emissor = Emissor.get_emissor_by_id(id=request.args['id'])
+      
+      return emissor if emissor else {'message': 'Emissor nao encontrado'}
+    else:
+      return Emissor.retrieve_all_emissores()
 
   def post(self):
 
