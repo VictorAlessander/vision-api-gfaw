@@ -5,6 +5,7 @@ from serializers import gmud_schema
 from datetime import datetime
 
 
+
 class GmudResource(Resource):
 
   def __init__(self):
@@ -19,12 +20,12 @@ class GmudResource(Resource):
       return Gmud.retrieve_all_gmuds()
 
   def post(self):
-    self.parser.add_argument(
-      'numero',
-      required=True,
-      location='json',
-      help='Numero da gmud nao pode ser vazio'
-    )
+    # self.parser.add_argument(
+    #   'numero',
+    #   required=True,
+    #   location='json',
+    #   help='Numero da gmud nao pode ser vazio'
+    # )
 
     self.parser.add_argument(
       'descricao',
@@ -92,14 +93,16 @@ class GmudResource(Resource):
 
     data = self.parser.parse_args()
 
-    # getdate = datetime.now()
-    # numero_gmud = 'C'+'{}'+'{}'+'{}'.format(
-    #   getdate.strftime("%Y"),
-    #   getdate.strftime("%m"),
-    #   getdate.strftime("%d"))
+    getdate = datetime.now()
+    numero_gmud = 'C'+'{}'+'{}'+'{}'+'-{}'.format(
+      getdate.strftime("%Y"),
+      getdate.strftime("%m"),
+      getdate.strftime("%d")
+      )
 
     new_gmud = Gmud(
-      numero=data['numero'],
+      # numero=data['numero'],
+      numero=numero_gmud,
       descricao=data['descricao'],
       responsavel=data['responsavel'],
       status=data['status'],
@@ -108,7 +111,7 @@ class GmudResource(Resource):
       plano_reversao=data['plano_reversao'],
       evidencias=data['evidencias'],
       referencia_externa=data['referencia_externa'],
-      emissor=data['emissor_id']
+      emissor_id=data['emissor_id']
     )
 
     try:
@@ -119,12 +122,12 @@ class GmudResource(Resource):
       return {'message': 'Algo esta incorreto'}
 
   def put(self):
-    self.parser.add_argument(
-      'numero',
-      required=True,
-      location='json',
-      help='Numero da gmud nao pode ser vazio'
-    )
+    # self.parser.add_argument(
+    #   'numero',
+    #   required=True,
+    #   location='json',
+    #   help='Numero da gmud nao pode ser vazio'
+    # )
 
     self.parser.add_argument(
       'descricao',
@@ -203,7 +206,7 @@ class GmudResource(Resource):
       gmud = Gmud.get_gmud_by_id(request.args['id'])
 
       if gmud:
-        gmud.numero = data['numero']
+        # gmud.numero = data['numero']
         gmud.descricao = data['descricao']
         gmud.responsavel = data['responsavel']
         gmud.versionamento = data['versionamento']
