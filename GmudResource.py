@@ -238,7 +238,8 @@ class GmudResource(Resource):
   def delete(self):
     if 'id' in request.args:
       try:
-        Gmud.remove(request.args['id'])
+        Gmud.remove(id=request.args['id'])
+        return {'message': 'Gmud removida com sucesso'}
       except Exception as err:
         print(err)
         return {'message': 'Algo esta incorreto'}

@@ -71,7 +71,8 @@ class Gmud(db.Model):
     db.session.add(self)
     db.session.commit()
 
-  def remove(self, id):
+  @classmethod
+  def remove(cls, id):
     gmud = Gmud.get_gmud_by_id(id)
     db.session.delete(gmud)
     db.session.commit()
