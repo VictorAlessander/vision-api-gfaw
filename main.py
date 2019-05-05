@@ -7,9 +7,9 @@ from flask_jwt_extended import JWTManager
 import os
 from flask import flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from flask_migrate import Migrate
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
-
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -17,6 +17,7 @@ api = Api(app)
 jwt = JWTManager(app)
 setup_database = configure(app)
 db = SQLAlchemy(setup_database)
+migrate = Migrate(app, db)
 
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 app.config['JWT_BLACKLIST_ENABLED'] = True
@@ -29,7 +30,7 @@ def create_tables():
 
 
 import models
-import  UserResource, JwtResource, GmudResource, EmissorResource, FileResource
+import UserResource, JwtResource, GmudResource, EmissorResource, FileResource
 
 api.add_resource(UserResource.UserLogin, '/login')
 api.add_resource(UserResource.UserRegistration, '/registration')

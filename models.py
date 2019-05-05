@@ -1,6 +1,7 @@
 from main import db
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
+from flask import jsonify
 
 
 class User(db.Model):
@@ -10,8 +11,7 @@ class User(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(100), unique=True, nullable=False)
   password = db.Column(db.String(120), nullable=False)
-  documents = db.relationship('File', backref='user')
-  
+  documents = db.relationship('File', backref='user', lazy=True)
 
   def save(self):
     db.session.add(self)
@@ -57,8 +57,16 @@ class Gmud(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   numero = db.Column(db.String(30), unique=True, nullable=False)
+  descricao = db.Column(db.String(120), unique=False, nullable=False)
   responsavel = db.Column(db.String(80), unique=False, nullable=False)
   data = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.datetime.utcnow)
+  status = db.Column(db.Boolean)
+  versionamento = db.Column(db.Text, unique=False, nullable=True)
+  plano_execucao = db.Column(db.String(100), unique=False, nullable=False)
+  plano_reversao = db.Column(db.String(100), unique=False, nullable=False)
+  evidencias = db.Column(db.String(120), unique=False, nullable=False)
+  referencia_externa = db.Column(db.String(120), unique=True, nullable=False)
+  emissor_id = db.Column(db.Integer, db.ForeignKey('emissores.id'), nullable=False)
 
   def save(self):
     db.session.add(self)
@@ -75,12 +83,12 @@ class Gmud(db.Model):
 
   @classmethod
   def retrieve_all_gmuds(cls):
-    def to_json(x):
+    def to_json(arg):
       return {
         'id': arg.id,
         'numero': arg.numero,
         'responsavel': arg.responsavel,
-        'data': arg.data,
+        'data': str(arg.data),
         'status': arg.status,
         'versionamento': arg.versionamento,
         'plano_execucao': arg.plano_execucao,
@@ -92,50 +100,10 @@ class Gmud(db.Model):
   
     return {'gmuds': list(map(lambda x: to_json(x), Gmud.query.all()))}
 
-  
-class File(db.Model):
-
-  id = db.Column(db.Integer, primary_key=True)
-  # responsavel = db.Column(db.String(80), unique=False, nullable=False)
-  document = db.Column(db.String(120), unique=False, nullable=False)
-  data = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.datetime.utcnow)
-  user_id = db.Column(db.Integer, db.ForeignKey('users'), lazy=True)
-  extension = db.Column(db.String(8), nullable=False)
-
-  def save(self):
-  db.session.add(self)
-  db.session.commit()    
-
-  @classmethod
-  def find_file_by_id(cls, id):
-    return File.query.filter_by(id=id).first()
-
-  def remove(self, id):
-    doc = File.find_file_by_id(id = id)
-    if doc:
-      db.session.delete(doc)
-      db.session.commit()
-      return {'message': 'Arquivo deletado'}
-    else
-      return {'message': 'Arquivo nao encontrado'} 
-
-  @classmethod
-  def retrieve_all_files(cls):
-    def to_json(arg):
-      return {
-        'id': arg.id,
-        'document': arg.document,
-        'data': arg.data,
-        'user_id': arg.user_id,
-        'extension': arg.extension
-      }
-  
-    return {'arquivos': list(map(lambda x: to_json(x), File.query.all()))} 
-
 
 class Emissor(db.Model):
 
-  __tablename__ = 'files'
+  __tablename__ = 'emissores'
 
   id = db.Column(db.Integer, primary_key=True)
   nome = db.Column(db.String(100), nullable=False, unique=True)
@@ -159,3 +127,59 @@ class Emissor(db.Model):
   @classmethod
   def get_emissor_by_id(cls, id):
     return Emissor.query.filter_by(id=id).first()
+
+  @classmethod
+  def retrieve_all_emissores(cls):
+    def to_json(arg):
+      return {
+        'id': arg.id,
+        'nome': arg.nome,
+        'servidor': arg.servidor,
+        'nome_base': arg.nome_base,
+        'usuario_db': arg.usuario_db,
+        'senha_db': arg.senha_db
+      }
+
+    return {'emissores': list(map(lambda x: to_json(x), Emissor.query.all()))}
+
+
+class File(db.Model):
+
+  __tablename__ = 'files'
+
+  id = db.Column(db.Integer, primary_key=True)
+  # responsavel = db.Column(db.String(80), unique=False, nullable=False)
+  document = db.Column(db.String(120), unique=False, nullable=False)
+  data = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.datetime.utcnow)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  extension = db.Column(db.String(8), nullable=False)
+
+  def save(self):
+    db.session.add(self)
+    db.session.commit()
+
+  @classmethod
+  def find_file_by_id(cls, id):
+    return File.query.filter_by(id=id).first()
+
+  def remove(self, id):
+    doc = File.find_file_by_id(id = id)
+    if doc:
+      db.session.delete(doc)
+      db.session.commit()
+      return {'message': 'Arquivo deletado'}
+    else:
+      return {'message': 'Arquivo nao encontrado'} 
+
+  @classmethod
+  def retrieve_all_files(cls):
+    def to_json(arg):
+      return {
+        'id': arg.id,
+        'document': arg.document,
+        'data': arg.data,
+        'user_id': arg.user_id,
+        'extension': arg.extension
+      }
+  
+    return {'arquivos': list(map(lambda x: to_json(x), File.query.all()))}

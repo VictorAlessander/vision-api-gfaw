@@ -24,7 +24,7 @@ class FileResource(Resource):
       help='Id do usuario responsavel do documento nao pode ser vazio'
     )
 
-     self.parser.add_argument(
+    self.parser.add_argument(
       'extension',
       required=True, 
       location='json',
@@ -42,9 +42,10 @@ class FileResource(Resource):
 
     try:
       new_file.save()
+      return {'message': 'Arquivo salvo com sucesso'}
     except Exception as err:
       print(err)
-      return {'message': 'DEU RUIM'}
+      return {'message': 'Algo esta incorreto'}
 
   def get(self):
     if 'id' in requests.args:
@@ -63,18 +64,20 @@ class FileResource(Resource):
       doc.extension = data['extension']
       try:
         doc.save()
+        return {'message': 'Arquivo atualizado com sucesso'}
       except Exception as err:
         print(err)
-        return {'message': 'DEU RUIM'}
+        return {'message': 'Algo esta incorreto'}
     else:
-      return {'message': 'Arquivo nao encontrado'}  
+      return {'message': 'Arquivo nao encontrado'}
 
   def delete(self):
     if 'id' in requests.args:
       try:
         File.remove(requests.args['id'])
+        return {'message': 'Arquivo deletado com sucesso'}
       except Exception as err:
         print(err)
-        return {'message': 'DEU RUIM'}, 500
+        return {'message': 'Algo esta incorreto'}, 500
     else:
       return {'message': 'BAD REQUEST'}, 400
