@@ -1,0 +1,15 @@
+image: conductorcr.azurecr.io/vision/oraclejdk8-maven:1.2
+
+stages:
+  - build
+  - prepare
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - docker login $PORTUS_URL -u $PORTUS_USER -p $PORTUS_PASSWORD 
+    - docker build -t conductorcr.azurecr.io/vision/api:0.0.3 .
+    - docker push conductorcr.azurecr.io/vision/api:0.0.3
+  only:
+    - master
