@@ -116,14 +116,15 @@ class Emissor(db.Model):
     db.session.add(self)
     db.session.commit()
 
-  def remove(self, id):
+  @classmethod
+  def remove(cls, id):
     emissor = Emissor.get_emissor_by_id(id)
     db.session.delete(emissor)
     db.session.commit()
 
   @classmethod
   def get_emissor_by_id(cls, id):
-    return Emissor.query.filter(id=id).first()
+    return Emissor.query.filter_by(id=id).first()
 
   @classmethod
   def retrieve_all_emissores(cls):
