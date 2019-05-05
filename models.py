@@ -87,6 +87,7 @@ class Gmud(db.Model):
       return {
         'id': arg.id,
         'numero': arg.numero,
+        'descricao': arg.descricao,
         'responsavel': arg.responsavel,
         'data': str(arg.data),
         'status': arg.status,
