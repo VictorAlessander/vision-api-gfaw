@@ -15,7 +15,10 @@ class GmudResource(Resource):
     if 'id' in request.args:
       gmud = Gmud.get_gmud_by_id(request.args['id'])
 
-      return gmud_schema.jsonify(gmud) if gmud else {'message': 'Gmud nao encontrada'}
+      if gmud:
+        return gmud_schema.jsonify(gmud)
+      else:
+        {'message': 'Gmud nao encontrada'}, 404
     else:
       return Gmud.retrieve_all_gmuds()
 

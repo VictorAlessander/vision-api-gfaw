@@ -42,16 +42,18 @@ class FileResource(Resource):
 
     try:
       new_file.save()
-      return {'message': 'Arquivo salvo com sucesso'}
+      return {'message': 'Arquivo salvo com sucesso'}, 200
     except Exception as err:
       print(err)
-      return {'message': 'Algo esta incorreto'}
+      return {'message': 'Algo esta incorreto'}, 500
 
   def get(self):
     if 'id' in requests.args:
       doc = File.find_file_by_id(request.args['id'])
 
-      return file_schema.jsonify(doc) if doc else {'message': 'Arquivo nao encontrado'}
+      if doc:
+        return file_schema.jsonify(doc)
+      else: {'message': 'Arquivo nao encontrado'}, 404
     else:
       return File.retrieve_all_files()
 
@@ -67,19 +69,19 @@ class FileResource(Resource):
 
       try:
         doc.save()
-        return {'message': 'Arquivo atualizado com sucesso'}
+        return {'message': 'Arquivo atualizado com sucesso'}, 200
 
       except Exception as err:
         print(err)
-        return {'message': 'Algo esta incorreto'}
+        return {'message': 'Algo esta incorreto'}, 500
     else:
-      return {'message': 'Arquivo nao encontrado'}
+      return {'message': 'Arquivo nao encontrado'}, 404
 
   def delete(self):
     if 'id' in requests.args:
       try:
         File.remove(requests.args['id'])
-        return {'message': 'Arquivo deletado com sucesso'}
+        return {'message': 'Arquivo deletado com sucesso'}, 200
       except Exception as err:
         print(err)
         return {'message': 'Algo esta incorreto'}, 500

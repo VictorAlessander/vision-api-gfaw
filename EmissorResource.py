@@ -1,7 +1,7 @@
 from flask_restful import reqparse, Resource
 from models import Emissor
 from flask import request
-import serializers
+from serializers import emissor_schema
 
 
 class EmissorResource(Resource):
@@ -13,8 +13,11 @@ class EmissorResource(Resource):
   def get(self):
     if 'id' in request.args:
       emissor = Emissor.get_emissor_by_id(id=request.args['id'])
-      
-      return serializers.emissor_schema.jsonify(emissor) if emissor else {'message': 'Emissor nao encontrado'}, 404
+
+      if emissor:
+        return emissor_schema.jsonify(emissor)
+      else:
+        {'message': 'Emissor nao encontrado'}, 404
     else:
       return Emissor.retrieve_all_emissores()
 
