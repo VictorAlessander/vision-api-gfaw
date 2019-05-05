@@ -14,7 +14,7 @@ class EmissorResource(Resource):
     if 'id' in request.args:
       emissor = Emissor.get_emissor_by_id(id=request.args['id'])
       
-      return serializers.emissor_schema.jsonify(emissor) if emissor else {'message': 'Emissor nao encontrado'}
+      return serializers.emissor_schema.jsonify(emissor) if emissor else {'message': 'Emissor nao encontrado'}, 404
     else:
       return Emissor.retrieve_all_emissores()
 
@@ -67,7 +67,7 @@ class EmissorResource(Resource):
 
     try:
       new_emissor.save()
-      return {'message': 'Emissor salvo com sucesso'}
+      return {'message': 'Emissor salvo com sucesso'}, 200
     except Exception as err:
       print(err)
       return {'message': 'Algo esta incorreto'}, 500
@@ -122,12 +122,12 @@ class EmissorResource(Resource):
 
         try:
           emissor.save()
-          return {'message': 'Emissor salvo com sucesso'}
+          return {'message': 'Emissor salvo com sucesso'}, 200
         except Exception as err:
           print(err)
           return {'message': 'Algo esta incorreto'}, 500
       else:
-        return {'message': 'Emissor nao encontrado'}
+        return {'message': 'Emissor nao encontrado'}, 404
 
   def delete(self):
     if 'id' in request.args:
@@ -135,4 +135,4 @@ class EmissorResource(Resource):
         Emissor.remove(id=request.args['id'])
       except Exception as err:
         print(err)
-        return {'message': 'Algo esta incorreto'}
+        return {'message': 'Algo esta incorreto'}, 500

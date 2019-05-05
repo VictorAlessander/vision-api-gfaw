@@ -20,13 +20,6 @@ class GmudResource(Resource):
       return Gmud.retrieve_all_gmuds()
 
   def post(self):
-    # self.parser.add_argument(
-    #   'numero',
-    #   required=True,
-    #   location='json',
-    #   help='Numero da gmud nao pode ser vazio'
-    # )
-
     self.parser.add_argument(
       'descricao',
       required=True,
@@ -107,7 +100,6 @@ class GmudResource(Resource):
       )
 
     new_gmud = Gmud(
-      # numero=data['numero'],
       numero=numero_gmud,
       descricao=data['descricao'],
       responsavel=data['responsavel'],
@@ -128,12 +120,12 @@ class GmudResource(Resource):
       return {'message': 'Algo esta incorreto'}
 
   def put(self):
-    # self.parser.add_argument(
-    #   'numero',
-    #   required=True,
-    #   location='json',
-    #   help='Numero da gmud nao pode ser vazio'
-    # )
+    self.parser.add_argument(
+      'numero',
+      required=False,
+      location='json',
+      help='Numero da gmud nao pode ser vazio'
+    )
 
     self.parser.add_argument(
       'descricao',
@@ -202,17 +194,11 @@ class GmudResource(Resource):
 
     data = self.parser.parse_args()
 
-    # getdate = datetime.now()
-    # numero_gmud = 'C'+'{}'+'{}'+'{}'.format(
-    #   getdate.strftime("%Y"),
-    #   getdate.strftime("%m"),
-    #   getdate.strftime("%d"))
-
     if 'id' in request.args:
       gmud = Gmud.get_gmud_by_id(request.args['id'])
 
       if gmud:
-        # gmud.numero = data['numero']
+        gmud.numero = data['numero']
         gmud.descricao = data['descricao']
         gmud.responsavel = data['responsavel']
         gmud.versionamento = data['versionamento']
@@ -226,12 +212,12 @@ class GmudResource(Resource):
 
         try:
           gmud.save()
-          return {'message': 'Gmud atualizada com sucesso'}
+          return {'message': 'Gmud atualizada com sucesso'}, 200
         except Exception as err:
           print(err)
-          return {'message': 'Algo esta incorreto'}
+          return {'message': 'Algo esta incorreto'}, 500
       else:
-        return {'message': 'Gmud nao encontrada'}
+        return {'message': 'Gmud nao encontrada'}, 404
     else:
       return {'message': 'BAD REQUEST'}, 400
 
@@ -239,9 +225,9 @@ class GmudResource(Resource):
     if 'id' in request.args:
       try:
         Gmud.remove(id=request.args['id'])
-        return {'message': 'Gmud removida com sucesso'}
+        return {'message': 'Gmud removida com sucesso'}, 200
       except Exception as err:
         print(err)
-        return {'message': 'Algo esta incorreto'}
+        return {'message': 'Algo esta incorreto'}, 500
     else:
       return {'message': 'BAD REQUEST'}, 400
