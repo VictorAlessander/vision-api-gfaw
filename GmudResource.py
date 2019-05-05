@@ -3,7 +3,7 @@ from models import Gmud
 from flask import request
 from serializers import gmud_schema
 from datetime import datetime
-
+import random
 
 
 class GmudResource(Resource):
@@ -94,10 +94,16 @@ class GmudResource(Resource):
     data = self.parser.parse_args()
 
     getdate = datetime.now()
-    numero_gmud = 'C'+'{}'+'{}'+'{}'+'-{}'.format(
-      getdate.strftime("%Y"),
+    generate_value = random.randint(0, 999)
+
+    if generate_value < 100:
+      generate_value = '0'+str(generate_value)
+
+    numero_gmud = 'C{}{}{}-{}'.format(
+      getdate.strftime("%y"),
       getdate.strftime("%m"),
-      getdate.strftime("%d")
+      getdate.strftime("%d"),
+      generate_value
       )
 
     new_gmud = Gmud(
