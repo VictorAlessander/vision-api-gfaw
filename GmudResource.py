@@ -2,6 +2,7 @@ from flask_restful import reqparse, Resource
 from models import Gmud
 from flask import request
 from serializers import gmud_schema
+from datetime import datetime
 
 
 class GmudResource(Resource):
@@ -83,13 +84,15 @@ class GmudResource(Resource):
     )
 
     self.parser.add_argument(
-      'emissor_id',
+      'emissor',
       required=True,
       location='json',
       help='Id do emissor nao pode estar vazio'
     )
 
     data = self.parser.parse_args()
+
+    # getdate = datetime
 
     new_gmud = Gmud(
       numero=data['numero'],
@@ -101,7 +104,7 @@ class GmudResource(Resource):
       plano_reversao=data['plano_reversao'],
       evidencias=data['evidencias'],
       referencia_externa=data['referencia_externa'],
-      emissor_id=data['emissor_id']
+      emissor=data['emissor']
     )
 
     try:
@@ -178,7 +181,7 @@ class GmudResource(Resource):
     )
 
     self.parser.add_argument(
-      'emissor_id',
+      'emissor',
       required=True,
       location='json',
       help='Id do emissor nao pode estar vazio'
@@ -200,7 +203,7 @@ class GmudResource(Resource):
         gmud.plano_reversao = data['plano_reversao']
         gmud.evidencias = data['evidencias']
         gmud.referencia_externa = data['referencia_externa']
-        gmud.emissor_id = data['emissor_id']
+        gmud.emissor = data['emissor']
 
         try:
           gmud.save()

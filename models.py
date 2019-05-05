@@ -65,7 +65,7 @@ class Gmud(db.Model):
   plano_reversao = db.Column(db.String(100), unique=False, nullable=False)
   evidencias = db.Column(db.String(120), unique=False, nullable=False)
   referencia_externa = db.Column(db.String(120), unique=True, nullable=False)
-  emissor_id = db.Column(db.Integer, db.ForeignKey('emissores.id'), nullable=False)
+  emissor = db.Column(db.Integer, db.ForeignKey('emissores.id'), nullable=False)
 
   def save(self):
     db.session.add(self)
@@ -94,7 +94,7 @@ class Gmud(db.Model):
         'plano_reversao': arg.plano_reversao,
         'evidencias': arg.evidencias,
         'referencia_externa': arg.referencia_externa,
-        'emissor_id': arg.emissor_id
+        'emissor': arg.emissor
       }
   
     return {'gmuds': list(map(lambda x: to_json(x), Gmud.query.all()))}
